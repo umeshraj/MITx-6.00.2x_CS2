@@ -76,24 +76,48 @@ def testGreedy_many(foods, max_units):
     testGreedy(foods, max_units, Food.density)
 
 
-names = ['wine', 'beer', 'pizza', 'burger', 'fries',
-         'cola', 'apple', 'donut', 'cake']
-values = [89, 90, 95, 100, 90, 79, 50, 10]
-calories = [123, 154, 258, 354, 365, 150, 95, 195]
-foods = buildMenu(names, values, calories)
-testGreedy_many(foods, 1000)
+def maxVal(item_list, rem_space):
+    """ search tree to find best combination of items in knapsack
+    Returns:
+        (value, items_chosen)
+    """
+    if item_list == [] or rem_space == 0:  # no items or space
+        result = (0, ())
+    else:
+        next_item = item_list[0]
+        if next_item.getCost() > rem_space:
+            result = maxVal(item_list[1:], rem_space)
+        else:
+            with_val, with_list = maxVal(item_list[1:],
+                                              rem_space-next_item.getCost())
+            with_val += next_item.getValue()
+
+            without_val, without_list = maxVal(item_list[1:],
+                                                    rem_space)
+            if with_val > without_val:
+                result = (with_val, with_list + (next_item, ))
+            else:
+                result = (without_val, without_list)
+    return result
 
 
-
-
-
+def testMaxVal(foods, maxUnits, printItems = True):
+    print('Use search tree to allocate', maxUnits,
+          'calories')
+    val, taken = maxVal(foods, maxUnits)
+    print('Total value of items taken =', val)
+    if printItems:
+        for item in taken:
+            print('   ', item)
 
 
 if __name__ == "__main__":
-    foods = ['apple', 'burger' , 'shake']
-    values = [10, 50, 100]
-    calories = [1, 200, 350]
-    menu = buildMenu(foods, values, calories)
+    names = ['wine', 'beer', 'pizza', 'burger', 'fries',
+             'cola', 'apple', 'donut', 'cake']
+    values = [89, 90, 95, 100, 90, 79, 50, 10]
+    calories = [123, 154, 258, 354, 365, 150, 95, 195]
+    foods = buildMenu(names, values, calories)
+    testGreedy_many(foods, 1000)
 
     # implement a flexible greedy algorithm
-
+    testMaxVal(foods, 750)
