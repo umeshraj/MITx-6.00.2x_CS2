@@ -55,7 +55,31 @@ def greedy_cow_transport(cows,limit=10):
     trips
     """
     # TODO: Your code here
-    pass
+    num_passengers = len(cows)
+    max_limit = limit
+    pass_list = dict_to_list(cows)
+
+    num_transported = 0
+    transport_list = []
+    while num_transported < num_passengers:
+        trans_list, remain_list = greedy(pass_list, max_limit)
+        transport_list.append(trans_list)
+        num_transported += len(trans_list)
+        pass_list = remain_list
+    return transport_list
+
+def greedy(pass_list, max_weight):
+    pass_list = sorted(pass_list, key=Passenger.getWeight, reverse=True)
+    cur_weight = 0
+    transport_names = []
+    remaining_list = []
+    for item in pass_list:
+        if item.getWeight() + cur_weight <= max_weight:
+            transport_names.append(item.getName())
+            cur_weight += item.getWeight()
+        else:
+            remaining_list.append(item)
+    return transport_names, remaining_list
 
 
 # Problem 2
@@ -174,7 +198,6 @@ lines to print the result of your problem.
 
 cows = load_cows("ps1_cow_data.txt")
 limit=10
-
 #cows = {"Jesse": 6, "Maybel": 3, "Callie": 2, "Maggie": 5}
 #limit=10
 
@@ -187,5 +210,14 @@ limit=10
 
 print(cows)
 
+print('Greedy')
+start = time.time()
 print(greedy_cow_transport(cows, limit))
+end = time.time()
+print(end - start)
+
+print('Brute force')
+start = time.time()
 print(brute_force_cow_transport(cows, limit))
+end = time.time()
+print(end - start)
