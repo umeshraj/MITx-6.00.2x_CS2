@@ -284,15 +284,15 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
             robot_list.append(robot_type(room, speed))
         amount_cleaned = 0
         time = 0
-        anim = ps2_visualize.RobotVisualization(num_robots, width, height)
+        #anim = ps2_visualize.RobotVisualization(num_robots, width, height)
         while amount_cleaned < min_coverage:
             for robot in robot_list:
                 robot.updatePositionAndClean()
             num_cleaned = robot.room.getNumCleanedTiles()
             amount_cleaned = num_cleaned/num_tiles
             time += 1
-            anim.update(room, robot_list)
-        anim.done()
+            #anim.update(room, robot_list)
+        #anim.done()
         return time
 
 
@@ -393,7 +393,8 @@ def showPlot2(title, x_label, y_label):
 #
 #       (... your call here ...)
 #
-
+#showPlot1('test', 'num_robots', 'time')
+showPlot2('test', 'aspect ration', 'time')
 #
 # 2) Write a function call to showPlot2 that generates an appropriately-labeled
 #     plot.
