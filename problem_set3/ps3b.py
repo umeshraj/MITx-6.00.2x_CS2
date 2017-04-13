@@ -205,15 +205,26 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
     """
 
     # TODO
-    virus_list  = []
-    for idx in range(numViruses):
-        virus_list.append(SimpleVirus(maxBirthProb, clearProb))
-    patient = Patient(viruses=virus_list, maxPop=maxPop)
+    virus_count = [0] * 300
+    for idx_trial in range(numTrials):
+        virus_list  = []
+        for idx in range(numViruses):
+            virus_list.append(SimpleVirus(maxBirthProb, clearProb))
+        patient = Patient(viruses=virus_list, maxPop=maxPop)
 
-    virus_count = []
-    for iSim in range(300):
-        virus_count.append(patient.update())
-    pylab.plot(virus_count)
+        for idx_time in range(300):
+            virus_count[idx_time] += patient.update()
+        #pylab.plot(range(300), virus_count)
+
+    avg_virus_count=[x/numTrials for x in virus_count]
+    pylab.plot(range(300), avg_virus_count, label='virus')
+    pylab.title('SimpleVirus simulation')
+    pylab.xlabel('Time Steps')
+    pylab.ylabel('Average Virus Population')
+    pylab.legend()
+    pylab.show()
+
+
 
 #
 # PROBLEM 3
@@ -435,9 +446,9 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     # TODO
 
 
-#simulationWithoutDrug(numViruses=100, maxPop=1000, maxBirthProb=0.1,
-#                      clearProb=0.05, numTrials=1000)
-virus = SimpleVirus(1.0, 0.0)
-patient = Patient([virus], 100)
-for idx in range(100):
-    print(patient.update())
+simulationWithoutDrug(numViruses=100, maxPop=1000, maxBirthProb=0.1,
+                      clearProb=0.05, numTrials=4)
+#virus = SimpleVirus(1.0, 0.0)
+#patient = Patient([virus], 100)
+#for idx in range(100):
+#    print(patient.update())
