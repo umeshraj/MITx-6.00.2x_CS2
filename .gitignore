@@ -6,3 +6,5 @@ problem_set1/ps1_cow_data\.txt
 *.zip
 
 *.pyc
+
+*.txt
