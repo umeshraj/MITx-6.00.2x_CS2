@@ -377,7 +377,8 @@ class TreatedPatient(Patient):
         """
 
         # TODO
-
+        Patient.__init__(self, viruses, maxPop)
+        self.postcondition = []
 
     def addPrescription(self, newDrug):
         """
@@ -391,7 +392,8 @@ class TreatedPatient(Patient):
         """
 
         # TODO
-
+        if newDrug not in self.postcondition:
+            self.postcondition.append(newDrug)
 
     def getPrescriptions(self):
         """
@@ -402,6 +404,7 @@ class TreatedPatient(Patient):
         """
 
         # TODO
+        return self.postcondition
 
 
     def getResistPop(self, drugResist):
@@ -417,6 +420,14 @@ class TreatedPatient(Patient):
         """
 
         # TODO
+        num_resist = 0
+        for virus in self.viruses:
+            all_resist = True
+            for drug in drugResist:
+                all_resist = all_resist and virus.isResistantTo(drug)
+            if all_resist:
+                num_resist += 1
+        return num_resist
 
 
     def update(self):
@@ -441,6 +452,24 @@ class TreatedPatient(Patient):
         """
 
         # TODO
+        fin_viruses = []
+        for virus in self.getViruses():
+            if virus.doesClear() is False:
+                fin_viruses.append(virus)
+
+        cur_density = len(fin_viruses)/self.getMaxPop()
+        child_virus = []
+        for virus in fin_viruses:
+            try:
+                new_virus = virus.reproduce(cur_density, self.postcondition)
+            except NoChildException:
+                pass
+            else:
+                if len(fin_viruses) + len(child_virus) <= self.getMaxPop():
+                    child_virus.append(new_virus)
+
+        self.viruses = fin_viruses + child_virus
+        return len(self.viruses)
 
 
 
