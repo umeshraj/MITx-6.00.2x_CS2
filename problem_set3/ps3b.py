@@ -188,41 +188,41 @@ class Patient(object):
 #
 # PROBLEM 2
 #
-    def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
-                              numTrials):
-        """
-        Run the simulation and plot the graph for problem 3 (no drugs are used,
-        viruses do not have any drug resistance).
-        For each of numTrials trial, instantiates a patient, runs a simulation
-        for 300 timesteps, and plots the average virus population size as a
-        function of time.
+def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
+                          numTrials):
+    """
+    Run the simulation and plot the graph for problem 3 (no drugs are used,
+    viruses do not have any drug resistance).
+    For each of numTrials trial, instantiates a patient, runs a simulation
+    for 300 timesteps, and plots the average virus population size as a
+    function of time.
 
-        numViruses: number of SimpleVirus to create for patient (an integer)
-        maxPop: maximum virus population for patient (an integer)
-        maxBirthProb: Maximum reproduction probability (a float between 0-1)
-        clearProb: Maximum clearance probability (a float between 0-1)
-        numTrials: number of simulation runs to execute (an integer)
-        """
+    numViruses: number of SimpleVirus to create for patient (an integer)
+    maxPop: maximum virus population for patient (an integer)
+    maxBirthProb: Maximum reproduction probability (a float between 0-1)
+    clearProb: Maximum clearance probability (a float between 0-1)
+    numTrials: number of simulation runs to execute (an integer)
+    """
 
-        # TODO
-        virus_count = [0] * 300
-        for idx_trial in range(numTrials):
-            virus_list  = []
-            for idx in range(numViruses):
-                virus_list.append(SimpleVirus(maxBirthProb, clearProb))
-            patient = Patient(viruses=virus_list, maxPop=maxPop)
+    # TODO
+    virus_count = [0] * 300
+    for idx_trial in range(numTrials):
+        virus_list  = []
+        for idx in range(numViruses):
+            virus_list.append(SimpleVirus(maxBirthProb, clearProb))
+        patient = Patient(viruses=virus_list, maxPop=maxPop)
 
-            for idx_time in range(300):
-                virus_count[idx_time] += patient.update()
-            #pylab.plot(range(300), virus_count)
+        for idx_time in range(300):
+            virus_count[idx_time] += patient.update()
+        #pylab.plot(range(300), virus_count)
 
-        avg_virus_count=[x/numTrials for x in virus_count]
-        pylab.plot(range(300), avg_virus_count, label='virus')
-        pylab.title('SimpleVirus simulation')
-        pylab.xlabel('Time Steps')
-        pylab.ylabel('Average Virus Population')
-        pylab.legend()
-        pylab.show()
+    avg_virus_count=[x/numTrials for x in virus_count]
+    pylab.plot(range(300), avg_virus_count, label='virus')
+    pylab.title('SimpleVirus simulation')
+    pylab.xlabel('Time Steps')
+    pylab.ylabel('Average Virus Population')
+    pylab.legend()
+    pylab.show()
 
 
 
@@ -500,10 +500,54 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     """
 
     # TODO
+    num_timesteps = 300
+    virus_count = [0] * num_timesteps
+    guttagonol_virus_count = [0] * num_timesteps
+    for idx_trial in range(numTrials):
+        virus_list  = []
+        for idx in range(numViruses):
+            virus_list.append(ResistantVirus(maxBirthProb, clearProb,
+                                             resistances, mutProb))
+        patient = TreatedPatient(viruses=virus_list, maxPop=maxPop)
+        # patient.addPrescription('guttagonol')
 
+        for idx_time in range(num_timesteps):
+            if idx_time == 150:
+                patient.addPrescription('guttagonol')
+            virus_count[idx_time] += patient.update()
+            guttagonol_virus_count[idx_time] += patient.getResistPop(['guttagonol'])
 
-virus = ResistantVirus(0.0, 1.0, {"drug1":True, "drug2":False}, 0.0)
-tmp = virus.reproduce(0, ['drug3'])
+        #pylab.plot(range(300), virus_count)
+
+    avg_virus_count=[x/numTrials for x in virus_count]
+    guttagonol_avg_virus_count=[x/numTrials for x in guttagonol_virus_count]
+    pylab.plot(avg_virus_count,
+               label='virus')
+    pylab.plot(guttagonol_avg_virus_count,
+               label='guttagonol')
+    pylab.title('ResistantVirus simulation')
+    pylab.xlabel('time step')
+    pylab.ylabel('# viruses')
+    pylab.legend()
+    pylab.show()
+
+#simulationWithDrug(1, 10, 1.0, 0.0, {}, 1.0, 5)
+#simulationWithDrug(1, 20, 1.0, 0.0, {"guttagonol": True}, 1.0, 5)
+
+simulationWithDrug(75, 100, .8, 0.1, {"guttagonol": True}, 0.8, 1)
+
+#
+#simulationWithDrug(numViruses=100, maxPop=1000, maxBirthProb=0.1,
+#                   clearProb=0.05,
+#                   resistances={'guttagonol': False}, mutProb=0.005,
+#                   numTrials=100)
+#
+#simulationWithDrug(numViruses=100, maxPop=1000, maxBirthProb=0.1,
+#                   clearProb=0.05,
+#                   resistances={'guttagonol': False}, mutProb=0.005,
+#                   numTrials=100)
+#virus = ResistantVirus(0.0, 1.0, {"drug1":True, "drug2":False}, 0.0)
+#tmp = virus.reproduce(0, ['drug3'])
 
 #simulationWithoutDrug(numViruses=100, maxPop=1000, maxBirthProb=0.1,
 #                      clearProb=0.05, numTrials=4)
