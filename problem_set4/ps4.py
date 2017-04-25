@@ -1,6 +1,7 @@
 import numpy as np
 import pylab
 import re
+import matplotlib.pyplot as plt
 
 # cities in our weather data
 CITIES = [
@@ -177,18 +178,42 @@ def evaluate_models_on_training(x, y, models):
         None
     """
     # TODO
-    pass
+    x = np.array(x)
+    y = np.array(y)
+    for model in models:
+        plt.figure()
+        y_hat = np.polyval(model, x)
+        plt.plot(x, y, marker='o', lw=0)
+        plt.plot(x, y_hat, 'r')
+        r_val = r_squared(y, y_hat)
+        title_str = "Order: {0}; r-sq: {1:4.4f}".format(len(model), r_val)
+        plt.title(title_str)
 
-print(generate_models([1961, 1962, 1963],[4.4,5.5,6.6],[1, 2]))
+# print(generate_models([1961, 1962, 1963],[4.4,5.5,6.6],[1, 2]))
 
 ### Begining of program
 raw_data = Climate('data.csv')
 
+import pandas as pd
+df = pd.read_csv('data.csv')
+df = df[df.CITY == 'BOSTON']
+df['DateNew'] = pd.to_datetime(df.DATE.astype(str), format='%Y%m%d')
+
+df['year'] = df['DateNew'].dt.year
+df['month'] = df['DateNew'].dt.month
+df['date'] = df['DateNew'].dt.day
+
+fin_df = df.loc[(df.year.isin(INTERVAL_1))]
+fin_df = fin_df.loc[fin_df.month==1]
+fin_df = fin_df.loc[fin_df.date==10]
+
+fin_df.shape
 # Problem 3
 y = []
 x = INTERVAL_1
-for year in INTERVAL_1:
-    y.append(raw_data.get_daily_temp('BOSTON', 1, 10, year))
+#for year in INTERVAL_1:
+#    y.append(raw_data.get_daily_temp('BOSTON', 1, 10, year))
+y = fin_df.TEMP.values
 models = generate_models(x, y, [1])
 evaluate_models_on_training(x, y, models)
 
