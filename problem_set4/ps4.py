@@ -66,7 +66,7 @@ class Climate(object):
             if month not in self.rawdata[city][year]:
                 self.rawdata[city][year][month] = {}
             self.rawdata[city][year][month][day] = temperature
-            
+
         f.close()
 
     def get_yearly_temp(self, city, year):
@@ -131,7 +131,11 @@ def generate_models(x, y, degs):
         that minimizes the squared error of the fitting polynomial
     """
     # TODO
-    pass
+    models = []
+    for deg in degs:
+        coef = np.polyfit(x, y, deg)
+        models.append(coef)
+    return models
 
 # Problem 2
 def r_squared(y, estimated):
@@ -171,6 +175,7 @@ def evaluate_models_on_training(x, y, models):
     # TODO
     pass
 
+print(generate_models([1961, 1962, 1963],[4.4,5.5,6.6],[1, 2]))
 
 ### Begining of program
 raw_data = Climate('data.csv')
@@ -189,5 +194,5 @@ x1 = INTERVAL_1
 x2 = INTERVAL_2
 y = []
 # MISSING LINES
-models = generate_models(x, y, [1])    
+models = generate_models(x, y, [1])
 evaluate_models_on_training(x, y, models)
