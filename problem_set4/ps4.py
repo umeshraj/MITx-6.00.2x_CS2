@@ -222,6 +222,9 @@ evaluate_models_on_training(x, y, models)
 x1 = INTERVAL_1
 x2 = INTERVAL_2
 y = []
+fin_df = df.loc[(df.year.isin(INTERVAL_1))]
+yearly_df = fin_df.groupby(by='year')[['TEMP']].mean().reset_index()
+y = yearly_df.TEMP.values
 # MISSING LINES
 models = generate_models(x, y, [1])
 evaluate_models_on_training(x, y, models)
