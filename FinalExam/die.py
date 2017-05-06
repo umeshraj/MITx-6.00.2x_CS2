@@ -37,6 +37,12 @@ def makeHistogram(values, numBins, xLabel, yLabel, title=None):
         does not title the figure
     """
     # TODO
+    pylab.hist(values, bins=numBins)
+    pylab.xlabel(xLabel)
+    pylab.ylabel(yLabel)
+    if title:
+        pylab.title(title)
+    pylab.show()
 
 
 # Implement this -- Coding Part 2 of 2
