@@ -2,9 +2,9 @@ import random
 import pylab
 
 # Global Variables
-#MAXRABBITPOP = 1000
-#CURRENTRABBITPOP = 500
-#CURRENTFOXPOP = 30
+MAXRABBITPOP = 1000
+CURRENTRABBITPOP = 500
+CURRENTFOXPOP = 30
 
 #MAXRABBITPOP = 1000
 #CURRENTRABBITPOP = 1000
@@ -21,15 +21,14 @@ import pylab
 #CURRENTFOXPOP = 1
 
 # Test the simulation with CURRENTRABBITPOP = 10, CURRENTFOXPOP = 20, MAXRABBITPOP = 100
-CURRENTRABBITPOP = 10
-CURRENTFOXPOP = 20
-MAXRABBITPOP = 100
+#CURRENTRABBITPOP = 10
+#CURRENTFOXPOP = 20
+#MAXRABBITPOP = 100
 
 # Test the simulation with CURRENTRABBITPOP = 10, CURRENTFOXPOP = 20, MAXRABBITPOP = 100
-
-CURRENTRABBITPOP = 10
-CURRENTFOXPOP = 20
-MAXRABBITPOP = 100
+#CURRENTRABBITPOP = 10
+#CURRENTFOXPOP = 20
+#MAXRABBITPOP = 100
 
 
 
@@ -126,11 +125,23 @@ def runSimulation(numSteps):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    rab, fox = runSimulation(200)
-    plt.plot(rab, label='Rabbit')
+    import numpy as np
+    rabbitPopulationOverTime, fox = runSimulation(200)
+    plt.plot(rabbitPopulationOverTime, label='Rabbit')
     plt.plot(fox, label='Fox')
     plt.hlines(10, 0, 200)
     plt.legend()
+
+    coeff = np.polyfit(range(len(rabbitPopulationOverTime)),
+                    rabbitPopulationOverTime, 2)
+
+    plt.plot(np.polyval(coeff, range(len(rabbitPopulationOverTime))))
+
+    coeff = np.polyfit(range(len(fox)),
+                    fox, 2)
+
+    plt.plot(np.polyval(coeff, range(len(fox))))
+
 #    rabbitGrowth()
 #    rabbitGrowth()
 #    foxGrowth()
