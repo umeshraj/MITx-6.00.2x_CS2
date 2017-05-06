@@ -58,6 +58,42 @@ def getAverage(die, numRolls, numTrials):
       - Returns the mean calculated
     """
     # TODO
+    run_list = []
+    for iTrial in range(numTrials):
+        roll = rollDie(die, numRolls)
+        run_list.append(getLongestRun(roll))
+
+    makeHistogram(run_list, numBins=10, xLabel='Runs', yLabel='Counts',
+                  title='Rolling die')
+    mean_std = getMeanAndStd(run_list)
+    return round(mean_std[0], 3)
+
+
+def rollDie(die, numRolls):
+    rolls = []
+    for iRoll in range(numRolls):
+        rolls.append(die.roll())
+    return rolls
+
+def getLongestRun(in_list):
+    """compute the longest run in the input list"""
+    max_run = 1
+    cur_run = 1
+    for idx in range(1, len(in_list)):
+        if in_list[idx] == in_list[idx-1]:
+            cur_run += 1
+        else:
+            if cur_run > max_run:
+                max_run = cur_run
+            cur_run = 1  # reset cur_run
+    # update the cur_run in case last run is at end of list
+    if cur_run > max_run:
+        max_run = cur_run
+    return max_run
 
 # One test case
-print getAverage(Die([1,2,3,4,5,6,6,6,7]), 500, 10000)
+print(getAverage(Die([1,2,3,4,5,6,6,6,7]), 500, 10000))
+
+assert(getLongestRun([1, 4, 3]) == 1)
+assert(getLongestRun([1, 3, 3, 2]) == 2)
+assert(getLongestRun([5, 4, 4, 4, 5, 5, 2, 5]) == 3)
